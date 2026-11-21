@@ -1,8 +1,5 @@
-Write your reflection here.
-
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (HTML element, CSS selector, class and id
-selectors, sibling selector, inner_text, attribute, headless browser, waiting for
-JavaScript, crawling, pagination, read_html, melt, fuzzy matching, normalization,
-threshold, human in the loop, merge indicator, gap analysis), and make it
-actionable.
+I learned how to use the `read_html` function to extract tables from a webpage.
+It is used in the `scrape_hilltop` function to read every table on the Hilltop
+Grind webpage. To improve my ability to use this function, I can loop through
+the tables and print them so I can identify each DataFrame when extracting a
+specific table.

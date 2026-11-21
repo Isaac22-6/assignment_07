@@ -23,6 +23,8 @@ This step is walked through line by line. The scrapers give you less help.
 
 import re
 
+from pyparsing import line
+
 # Lines on a menu card that are decoration, not data.
 NOISE = {"NEW!", "NEW", "V", "GF"}
 
@@ -35,8 +37,8 @@ def clean_price(text: str) -> float:
     - Remove the dollar sign and any commas with `.replace()`.
     - `.strip()` the spaces, then convert with `float()`.
     """
-    # TODO: your code here
-    pass
+    text = text.replace("$", "").replace(",", "")
+    return float(text.strip())
 
 
 def clean_card_lines(text: str) -> list[str]:
@@ -55,8 +57,13 @@ def clean_card_lines(text: str) -> list[str]:
     - Skip it if every word in it is in NOISE: `all(w in NOISE for w in line.split())`.
     - Otherwise append it to a list, and return the list.
     """
-    # TODO: your code here
-    pass
+    text = text.split("\n")
+    line = []
+    for word in text:
+        word = word.strip()
+        if word != "" and word not in NOISE:
+            line.append(word)
+    return line
 
 
 def parse_price_line(line: str) -> list[tuple[str, float]]:
@@ -79,8 +86,11 @@ def parse_price_line(line: str) -> list[tuple[str, float]]:
     - Loop over the matches. Use "Each" when size is "", and `clean_price()` on the
       price. Return the list of pairs.
     """
-    # TODO: your code here
-    pass
+    matches = re.findall(r"([SML])?\s*(\$\d[\d.,]*)", line)
+    for match in matches:
+        size = match[0] if match[0] else "Each"
+        price = clean_price(match[1])
+    return [(size, price) for size, price in matches]
 
 
 def card_rows(cafe: str, category: str, card_text: str) -> list[dict]:
@@ -100,5 +110,11 @@ def card_rows(cafe: str, category: str, card_text: str) -> list[dict]:
     - `parse_price_line()` the price line, and build one dict per (size, price)
       pair with the five keys above. Return the list.
     """
-    # TODO: your code here
-    pass
+    clean_text = clean_card_lines(card_text)
+    item = clean_text[0]
+    price_line = next(line for line in clean_text if "$" in line)
+    price_line = parse_price_line(price_line)
+    return [
+        {"cafe": cafe, "category": category, "item": item, "size": size, "price": price}
+        for size, price in price_line
+    ]

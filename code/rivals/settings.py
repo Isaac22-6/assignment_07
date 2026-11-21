@@ -44,8 +44,9 @@ CATEGORIES_FILE = os.path.join(DATA_DIR, "categories.csv")  # (cafe, category) -
 MENUS_FILE = os.environ.get("RIVALS_MENUS_FILE", os.path.join(CACHE_DIR, "menus.csv"))
 # The owner's matching decisions. The review page adds to it; it is meant to be
 # committed, so the decisions survive the next scrape.
-DECISIONS_FILE = os.environ.get("RIVALS_DECISIONS_FILE",
-                                os.path.join(DATA_DIR, "item_matches.csv"))
+DECISIONS_FILE = os.environ.get(
+    "RIVALS_DECISIONS_FILE", os.path.join(DATA_DIR, "item_matches.csv")
+)
 
 # Every café sizes drinks S, M and L; food is "Each".
 SIZES = ["S", "M", "L", "Each"]

@@ -68,8 +68,11 @@ else:
     st.subheader(f"{item['cafe']}: {item['item']}")
     st.caption(f"Item 1 of {len(to_review)} waiting · {item['kind']}")
     rows = menus[(menus["cafe"] == item["cafe"]) & (menus["item"] == item["item"])]
-    st.write(" · ".join(f"{size} ${price:.2f}" for size, price in
-                        zip(rows["size"], rows["price"])))
+    st.write(
+        " · ".join(
+            f"{size} ${price:.2f}" for size, price in zip(rows["size"], rows["price"])
+        )
+    )
 
     # Choices: the suggestions (best first), "new item", then every other name of
     # the same kind already on the list.
@@ -82,8 +85,13 @@ else:
     options = suggested + [NEW_ITEM] + others
     preselect = 0 if match_band(item["score"]) == "review" else len(suggested)
 
-    choice = st.selectbox("Which of our items is it?", options, index=preselect,
-                          format_func=lambda name: labels.get(name, name), key="choice")
+    choice = st.selectbox(
+        "Which of our items is it?",
+        options,
+        index=preselect,
+        format_func=lambda name: labels.get(name, name),
+        key="choice",
+    )
     save, skip = st.columns(2)
     if save.button("Save", key="save"):
         decisions = record_decision(decisions, item["cafe"], item["item"], choice)
@@ -96,5 +104,6 @@ else:
         st.rerun()
 
 st.subheader("Every rival item")
-st.dataframe(matches[["cafe", "item", "status", "matched_to", "score"]],
-             hide_index=True)
+st.dataframe(
+    matches[["cafe", "item", "status", "matched_to", "score"]], hide_index=True
+)

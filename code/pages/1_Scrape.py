@@ -26,11 +26,40 @@ from rivals import CAFES, MENUS_FILE, OUR_CAFE, run_scraper
 # that were picked. Run the whole app (open code/menu_app.py, then Run and Debug ->
 # "Streamlit Run: Current File") and click "Scrape" in the sidebar.
 #
-# 1. HEADING
-#    st.title: Salt City: Scrape the Rivals
-#    st.markdown: one sentence, e.g. "Pick the cafés to scrape. Each run replaces
-#    the saved dataset."
-#
+st.title("Salt City: Scrape the Rivals")
+st.markdown("Pick the cafés to scrape. Each run replaces the saved dataset.")
+
+cafes = st.multiselect("Cafés", key="cafes", options=list(CAFES), default=list(CAFES))
+scrape_button = st.button("Scrape", key="scrape")
+if scrape_button and cafes:
+    with st.spinner("Scraping café menus..."):
+        result = run_scraper(cafes)
+    if result.returncode == 0:
+        st.success(result.stdout.strip().splitlines()[-1])
+    else:
+        st.error("The scraper failed.")
+        st.code(result.stderr[-2000:])
+
+if not os.path.exists(MENUS_FILE):
+    st.info("No menus yet — scrape them above to create the dataset.")
+    st.stop()
+
+menus = pd.read_csv(MENUS_FILE)
+theirs = menus[menus["cafe"] != OUR_CAFE]
+
+cafes_metric, items_metric, rows_metric = st.columns(3)
+cafes_metric.metric("Cafés", theirs["cafe"].nunique())
+items_metric.metric("Items", theirs[["cafe", "item"]].drop_duplicates().shape[0])
+rows_metric.metric("Rows", len(theirs))
+
+st.dataframe(menus, hide_index=True)
+st.download_button(
+    "Download the dataset",
+    data=menus.to_csv(index=False),
+    file_name="menus.csv",
+    mime="text/csv",
+    key="download",
+)
 # 2. PICK AND SCRAPE
 #    a. cafes <- st.multiselect labeled "Cafés", key "cafes", options list(CAFES),
 #       every café selected by default.

@@ -22,5 +22,10 @@ SCRAPER = os.path.join(REPO_ROOT, "code", "scrape_menus.py")
 
 def run_scraper(cafes: list[str]) -> subprocess.CompletedProcess:
     """Run code/scrape_menus.py for these cafés; return the finished process."""
-    return subprocess.run([sys.executable, SCRAPER, *cafes], capture_output=True,
-                          text=True, cwd=REPO_ROOT, timeout=300)
+    return subprocess.run(
+        [sys.executable, SCRAPER, *cafes],
+        capture_output=True,
+        text=True,
+        cwd=REPO_ROOT,
+        timeout=300,
+    )
