@@ -23,8 +23,6 @@ This step is walked through line by line. The scrapers give you less help.
 
 import re
 
-from pyparsing import line
-
 # Lines on a menu card that are decoration, not data.
 NOISE = {"NEW!", "NEW", "V", "GF"}
 
@@ -57,13 +55,15 @@ def clean_card_lines(text: str) -> list[str]:
     - Skip it if every word in it is in NOISE: `all(w in NOISE for w in line.split())`.
     - Otherwise append it to a list, and return the list.
     """
-    text = text.split("\n")
-    line = []
-    for word in text:
-        word = word.strip()
-        if word != "" and word not in NOISE:
-            line.append(word)
-    return line
+    lines = []
+    for line in text.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        if all(word in NOISE for word in line.split()):
+            continue
+        lines.append(line)
+    return lines
 
 
 def parse_price_line(line: str) -> list[tuple[str, float]]:
@@ -87,10 +87,7 @@ def parse_price_line(line: str) -> list[tuple[str, float]]:
       price. Return the list of pairs.
     """
     matches = re.findall(r"([SML])?\s*(\$\d[\d.,]*)", line)
-    for match in matches:
-        size = match[0] if match[0] else "Each"
-        price = clean_price(match[1])
-    return [(size, price) for size, price in matches]
+    return [(size or "Each", clean_price(price)) for size, price in matches]
 
 
 def card_rows(cafe: str, category: str, card_text: str) -> list[dict]:

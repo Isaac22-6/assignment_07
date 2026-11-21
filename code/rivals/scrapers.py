@@ -83,8 +83,7 @@ def scrape_canal(page, shop: str = CANAL_SHOP) -> list[dict]:
         )
 
     hrefs = [
-        card.get_attribute("href")
-        for card in page.query_selector_all("a.result-card")
+        card.get_attribute("href") for card in page.query_selector_all("a.result-card")
     ]
 
     for href in hrefs:
